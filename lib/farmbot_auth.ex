@@ -2,15 +2,11 @@ defmodule FarmbotAuth do
   @moduledoc """
     Gets a token and device information
   """
-  @modules Application.get_env(:farmbot_auth, :callbacks) ++ [__MODULE__]
+  @modules Application.get_env(:farmbot_auth, :callbacks)
 
   use Timex
   use GenServer
   require Logger
-
-  def on_token(_token) do
-    Logger.debug("GOT TOKEN!")
-  end
 
   @doc """
     Application entry point
@@ -123,7 +119,7 @@ defmodule FarmbotAuth do
   defp do_callbacks(token) do
     spawn(fn ->
       Enum.all?(@modules, fn(module) ->
-        module.on_token(token)
+        send(module, {:authorization, token})
       end)
     end)
   end
