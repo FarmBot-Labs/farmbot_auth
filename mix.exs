@@ -1,4 +1,4 @@
-defmodule FarmbotAuth.Mixfile do
+defmodule Farmbot.Auth.Mixfile do
   use Mix.Project
 
   def project do
@@ -11,7 +11,7 @@ defmodule FarmbotAuth.Mixfile do
   end
 
   def application do
-    [mod: {FarmbotAuth, []},
+    [mod: {Farmbot.Auth, []},
      applications: [:logger, :timex, :httpotion, :rsa, :nerves_lib, :poison]]
   end
 

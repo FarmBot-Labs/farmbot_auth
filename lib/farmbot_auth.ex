@@ -1,4 +1,4 @@
-defmodule FarmbotAuth do
+defmodule Farmbot.Auth do
   @moduledoc """
     Gets a token and device information
   """
@@ -12,7 +12,7 @@ defmodule FarmbotAuth do
     Application entry point
   """
   def start(_type, args) do
-    Logger.debug("FarmbotAuth Starting.")
+    Logger.debug("Farmbot.Auth Starting.")
     start_link(args)
   end
 
