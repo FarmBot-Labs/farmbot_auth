@@ -2,7 +2,7 @@ defmodule Farmbot.Auth do
   @moduledoc """
     Gets a token and device information
   """
-  @modules Application.get_env(:farmbot_auth, :callbacks)
+  @modules Application.get_env(:farmbot_auth, :callbacks) ++ [Farmbot.Auth]
 
   use Timex
   use GenServer
@@ -80,32 +80,16 @@ defmodule Farmbot.Auth do
     GenServer.start_link(__MODULE__, args, name: __MODULE__ )
   end
 
-  @doc """
-    Log into Farmbot Services. Returns a token, or an error.
-  """
-  def login(email,pass,server)
-    when is_bitstring(email)
-     and is_bitstring(pass)
-     and is_bitstring(server)
-   do
-     GenServer.call(__MODULE__, {:login, email,pass,server}, 15000 )
-  end
-
-  # This should probably be a cast.
-  def handle_call({:login, email,pass,server}, _from, _old_token) do
-    thing =
-    with {:ok, pub_key}  <- get_public_key(server),
-         {:ok, encryped} <- encrypt(email,pass,pub_key),
-         do: get_token_from_server(encryped, server)
-    {:reply,thing,thing}
-  end
-
   def handle_call({:get_token}, _from, nil) do
     {:reply, nil, nil}
   end
 
   def handle_call({:get_token}, _from, token) do
-    {:reply, token, token}
+    {:reply, {:ok, token}, token}
+  end
+
+  def handle_info({:authorization, token}, _) do
+    {:noreply, token}
   end
 
   def terminate(:normal, state) do
